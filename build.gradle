@@ -15,7 +15,13 @@ buildscript {
     }
 }
 
+configurations {
+    compile
+    deployJars
+}
+
 apply plugin: 'forge'
+apply plugin: 'maven'
 
 ext.configFile = file "../CGOrigin/CG.properties"
 
@@ -62,5 +68,84 @@ processResources
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'src'
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    from (sourceSets.main.allSource.srcDirs) {
+        include '**/*.java'
+        include '**/*.scala'
+    }
+	classifier = 'dev'
+}
+
+artifacts {
+	archives jar
+    archives sourcesJar
+    archives deobfJar
+}
+
+uploadArchives {
+    if (project.hasProperty("mavenUser") && project.hasProperty("mavenPassword")) {
+        repositories {
+            mavenDeployer {
+                repository(url: "http://maven.dries007.net/content/repositories/ccm/") {
+                    authentication(userName: mavenUser, password: mavenPassword)
+                }
+                pom {
+                    groupId = project.group
+                    version = project.version
+                    artifactId = project.archivesBaseName
+                    project {
+                        name project.archivesBaseName
+                        packaging 'jar'
+                        description 'RacesForMinecraft'
+                        url 'https://github.com/TheCountryGamer/RacesForMinecraft'
+
+                        scm {
+                            url 'https://github.com/TheCountryGamer/RacesForMinecraft'
+                            connection 'scm:git:git://github.com/TheCountryGamer/RacesForMinecraft.git'
+                            developerConnection 'scm:git:git@github.com:TheCountryGamer/RacesForMinecraft.git'
+                        }
+
+                        issueManagement {
+                            system 'github'
+                            url 'https://github.com/TheCountryGamer/RacesForMinecraft/issues'
+                        }
+
+                        licenses  {
+                            license  {
+                                name 'Apache License Version 2.0'
+                                url 'https://github.com/TheCountryGamer/RacesForMinecraft/blob/master/LICENSE'
+                                distribution 'repo'
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id 'TheCountryGamer'
+                                name 'TheCountryGamer'
+                                roles { role 'developer' }
+                            }
+                        }
+                        
+                        developers {
+                            developer {
+                                id 'Dries007'
+                                name 'Dries007'
+                                roles { role 'developer' }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

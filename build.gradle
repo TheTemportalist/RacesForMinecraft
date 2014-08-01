@@ -15,6 +15,7 @@ buildscript {
     }
 }
 
+<<<<<<< HEAD
 repositories {
     maven {
         url = "http://maven.dries007.net/content/repositories/ccm/"
@@ -25,9 +26,15 @@ repositories {
     maven {
         url = "https://libraries.minecraft.net/"
     }
+=======
+configurations {
+    compile
+    deployJars
+>>>>>>> FETCH_HEAD
 }
 
 apply plugin: 'forge'
+apply plugin: 'maven'
 
 configurations {
     compile
@@ -86,6 +93,10 @@ processResources
     }
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> FETCH_HEAD
 task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
     classifier = 'src'
@@ -95,12 +106,22 @@ task deobfJar(type: Jar) {
     from sourceSets.main.output
     from (sourceSets.main.allSource.srcDirs) {
         include '**/*.java'
+<<<<<<< HEAD
     }
     classifier = 'dev'
 }
 
 artifacts {
     archives jar
+=======
+        include '**/*.scala'
+    }
+	classifier = 'dev'
+}
+
+artifacts {
+	archives jar
+>>>>>>> FETCH_HEAD
     archives sourcesJar
     archives deobfJar
 }
@@ -119,7 +140,11 @@ uploadArchives {
                     project {
                         name project.archivesBaseName
                         packaging 'jar'
+<<<<<<< HEAD
                         description 'CoG-RacesForMinecraft'
+=======
+                        description 'RacesForMinecraft'
+>>>>>>> FETCH_HEAD
                         url 'https://github.com/TheCountryGamer/RacesForMinecraft'
 
                         scm {
@@ -148,10 +173,24 @@ uploadArchives {
                                 roles { role 'developer' }
                             }
                         }
+<<<<<<< HEAD
+=======
+                        
+                        developers {
+                            developer {
+                                id 'Dries007'
+                                name 'Dries007'
+                                roles { role 'developer' }
+                            }
+                        }
+>>>>>>> FETCH_HEAD
                     }
                 }
             }
         }
     }
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> FETCH_HEAD

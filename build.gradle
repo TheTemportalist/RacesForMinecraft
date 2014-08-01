@@ -154,9 +154,7 @@ uploadArchives {
                                 name 'TheCountryGamer'
                                 roles { role 'developer' }
                             }
-                        }
-                        
-                        developers {
+                            
                             developer {
                                 id 'Dries007'
                                 name 'Dries007'

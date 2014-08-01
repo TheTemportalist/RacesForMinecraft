@@ -1,0 +1,16 @@
+[
+{
+  "modid": "racesforminecraft",
+  "name": "RacesForMinecraft",
+  "description": "Thank JadedCat. TODO, created actual desc. :P",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authors": ["CountryGamer", "Dries007"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": ["cgo"]
+}
+]

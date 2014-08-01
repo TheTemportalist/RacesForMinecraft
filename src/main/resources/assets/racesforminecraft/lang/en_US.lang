@@ -1,0 +1,2 @@
+
+command.rfm:rfm.usage=/rfm <add:remove:get> <race:skill:caste> <name> [player]

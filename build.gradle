@@ -15,7 +15,24 @@ buildscript {
     }
 }
 
+repositories {
+    maven {
+        url = "http://maven.dries007.net/content/repositories/ccm/"
+    }
+    maven {
+        url = "http://files.minecraftforge.net/maven/"
+    }
+    maven {
+        url = "https://libraries.minecraft.net/"
+    }
+}
+
 apply plugin: 'forge'
+
+configurations {
+    compile
+    deplayJars
+}
 
 ext.configFile = file "../CGOrigin/CG.properties"
 
@@ -30,10 +47,14 @@ group= "com.countrygamer.racesforminecraft"
 archivesBaseName = "CoG-RacesForMinecraft"
 
 dependencies {
-    compile project(':CGOrigin')
+    compile("com.countrygamer.cgo:CGOrigin:${config.minecraft_version}-3+:dev")
 }
 
 version = "0.0.1"
+
+if (System.getenv().BUILD_NUMBER != null) {
+    version = version + "_build-" + System.getenv().BUILD_NUMBER
+}
 
 minecraft {
     version = "${config.minecraft_version}-${config.forge_version}"
@@ -64,3 +85,73 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'src'
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    from (sourceSets.main.allSource.srcDirs) {
+        include '**/*.java'
+    }
+    classifier = 'dev'
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives deobfJar
+}
+
+uploadArchives {
+    if (project.hasProperty("mavenUser") && project.hasProperty("mavenPassword")) {
+        repositories {
+            mavenDeployer {
+                repository(url: "http://maven.dries007.net/content/repositories/ccm/") {
+                    authentication(userName: mavenUser, password: mavenPassword)
+                }
+                pom {
+                    groupId = project.group
+                    version = project.version
+                    artifactId = project.archivesBaseName
+                    project {
+                        name project.archivesBaseName
+                        packaging 'jar'
+                        description 'CoG-RacesForMinecraft'
+                        url 'https://github.com/TheCountryGamer/RacesForMinecraft'
+
+                        scm {
+                            url 'https://github.com/TheCountryGamer/RacesForMinecraft'
+                            connection 'scm:git:git://github.com/TheCountryGamer/RacesForMinecraft.git'
+                            developerConnection 'scm:git:git@github.com:TheCountryGamer/RacesForMinecraft.git'
+                        }
+
+                        issueManagement {
+                            system 'github'
+                            url 'https://github.com/TheCountryGamer/RacesForMinecraft/issues'
+                        }
+
+                        licenses  {
+                            license  {
+                                name 'Apache License Version 2.0'
+                                url 'https://github.com/TheCountryGamer/RacesForMinecraft/blob/master/LICENSE'
+                                distribution 'repo'
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id 'TheCountryGamer'
+                                name 'TheCountryGamer'
+                                roles { role 'developer' }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

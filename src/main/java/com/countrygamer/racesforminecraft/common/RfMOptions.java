@@ -240,10 +240,9 @@ public class RfMOptions extends OptionRegister {
 								int distanceY = effectObj.get("distanceY").getAsInt();
 								int duration = effectObj.get("duration").getAsInt();
 								int amplifier = effectObj.get("amplifier").getAsInt();
-								boolean isAmbient = effectObj.get("isAmbient").getAsBoolean();
 
 								PotionEffect potionEffect = new PotionEffect(effectID, duration,
-										amplifier, isAmbient);
+										amplifier);
 								if (!effectObj.get("hasDefaultCurativeItems").getAsBoolean()) {
 									potionEffect.setCurativeItems(new ArrayList<ItemStack>());
 								}

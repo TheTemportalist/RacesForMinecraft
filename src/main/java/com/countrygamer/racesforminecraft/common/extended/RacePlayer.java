@@ -8,13 +8,10 @@ import com.countrygamer.racesforminecraft.common.init.Skills;
 import com.countrygamer.racesforminecraft.common.talent.Caste;
 import com.countrygamer.racesforminecraft.common.talent.Race;
 import com.countrygamer.racesforminecraft.common.talent.Skill;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
 import java.util.HashSet;
@@ -121,19 +118,7 @@ public class RacePlayer extends ExtendedEntity {
 
 	public void applyEffects() {
 		for (Caste caste : this.castes) {
-			int x = MathHelper.floor_double(this.player().posX);
-			int y = MathHelper.floor_double(this.player().posY);
-			int y1 = y - 1;
-			int z = MathHelper.floor_double(this.player().posZ);
-			Block block = this.player().worldObj.getBlock(x, y1, z);
-			while (block == Blocks.air && y1 >= 0) {
-				y1 -= 1;
-				block = this.player().worldObj.getBlock(x, y1, z);
-			}
-			if (block != Blocks.air) {
-				int meta = this.player().worldObj.getBlockMetadata(x, y1, z);
-				caste.runEffectsForBlock(this.player(), this, block, meta, y - y1);
-			}
+			caste.runEffectsForBlock(this.player(), this);
 		}
 	}
 

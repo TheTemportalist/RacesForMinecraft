@@ -5,6 +5,7 @@ import com.countrygamer.cgo.wrapper.common.registries.OptionRegister;
 import com.countrygamer.racesforminecraft.common.init.Castes;
 import com.countrygamer.racesforminecraft.common.init.Races;
 import com.countrygamer.racesforminecraft.common.init.Skills;
+import com.countrygamer.racesforminecraft.common.lib.CasteTrait;
 import com.countrygamer.racesforminecraft.common.lib.NameParser;
 import com.countrygamer.racesforminecraft.common.talent.Caste;
 import com.countrygamer.racesforminecraft.common.talent.Race;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.config.Configuration;
 
 import java.io.*;
@@ -109,6 +111,11 @@ public class RfMOptions extends OptionRegister {
 		for (int i = 0; i < Potion.potionTypes.length; i++) {
 			if (Potion.potionTypes[i] != null)
 				content += "\t" + Potion.potionTypes[i].getName() + "\n";
+		}
+		content += "Biomes\n";
+		for (int i = 0; i < BiomeGenBase.getBiomeGenArray().length; i++) {
+			if (BiomeGenBase.getBiomeGenArray()[i] != null)
+				content += "\t" + BiomeGenBase.getBiomeGenArray()[i].biomeName + "\n";
 		}
 
 		byte[] data = content.getBytes();
@@ -214,55 +221,84 @@ public class RfMOptions extends OptionRegister {
 					// get the skill name
 					String name = jsonObject.get("name").getAsString();
 
-					HashMap<String, HashMap<PotionEffect, Integer>> map =
-							new HashMap<String, HashMap<PotionEffect, Integer>>();
-					for (JsonElement blockAndEffect : jsonObject.getAsJsonArray("blocks")) {
-						if (!blockAndEffect.isJsonObject())
+					HashSet<CasteTrait> traits = new HashSet<CasteTrait>();
+
+					for (JsonElement effectsElement : jsonObject.getAsJsonArray("effects")) {
+						if (!effectsElement.isJsonObject())
 							continue;
-						JsonObject blockAndEffectObj = blockAndEffect.getAsJsonObject();
+						JsonObject effectsObj = effectsElement.getAsJsonObject();
 
-						for (JsonElement blockElement : blockAndEffectObj.getAsJsonArray("block")) {
-							String block = blockElement.getAsString();
+						HashSet<Integer> biomes = new HashSet<Integer>();
+						for (JsonElement biomeElement : effectsObj.getAsJsonArray("biome")) {
+							String biomeName = biomeElement.getAsString();
+							int biomeID = this.getBiomeID(biomeName);
+							if (biomeID < 0) {
+								LogHelper.error(RfM.pluginName,
+										"Fatal error, biome with name " + biomeName
+												+ " does not exist");
+								continue;
+							}
+							biomes.add(biomeID);
+						}
 
-							HashMap<PotionEffect, Integer> effects = new HashMap<PotionEffect, Integer>();
+						HashSet<String> blocks = new HashSet<String>();
+						for (JsonElement blockElement : effectsObj.getAsJsonArray("block")) {
+							blocks.add(blockElement.getAsString());
+						}
 
-							for (JsonElement effectElement : blockAndEffectObj
-									.getAsJsonArray("effects")) {
-								if (!effectElement.isJsonObject())
-									continue;
-								JsonObject effectObj = effectElement.getAsJsonObject();
+						HashMap<PotionEffect, Integer> potionEffects =
+								new HashMap<PotionEffect, Integer>();
+						for (JsonElement potionEffectsElement : effectsObj.getAsJsonArray(
+								"potioneffects")) {
+							if (!potionEffectsElement.isJsonObject())
+								continue;
+							JsonObject potionEffectsObj = potionEffectsElement.getAsJsonObject();
 
-								int effectID = this
-										.getPotionID(effectObj.get("name").getAsString());
-								if (effectID < 0)
-									continue;
+							String effectName = potionEffectsObj.get("name").getAsString();
+							int effectID = this.getPotionID(effectName);
 
-								int distanceY = effectObj.get("distanceY").getAsInt();
-								int duration = effectObj.get("duration").getAsInt();
-								int amplifier = effectObj.get("amplifier").getAsInt();
-
-								PotionEffect potionEffect = new PotionEffect(effectID, duration,
-										amplifier);
-								if (!effectObj.get("hasDefaultCurativeItems").getAsBoolean()) {
-									potionEffect.setCurativeItems(new ArrayList<ItemStack>());
-								}
-								for (JsonElement itemElement : effectObj
-										.getAsJsonArray("curativeItems")) {
-									potionEffect.addCurativeItem(
-											NameParser.getItemStack(itemElement.getAsString()));
-								}
-
-								effects.put(potionEffect, distanceY);
-
+							if (effectID < 0) {
+								LogHelper.error(RfM.pluginName,
+										"Fatal error, potion effect with name " + effectName
+												+ " does not exist");
+								continue;
 							}
 
-							map.put(block, effects);
+							int distanceY = potionEffectsObj.get("distanceY").getAsInt();
+							int duration = potionEffectsObj.get("duration").getAsInt();
+							int amplifier = potionEffectsObj.get("amplifier").getAsInt();
 
+							PotionEffect potionEffect = new PotionEffect(effectID, duration,
+									amplifier);
+							if (!potionEffectsObj.get("hasDefaultCurativeItems").getAsBoolean()) {
+								potionEffect.setCurativeItems(new ArrayList<ItemStack>());
+							}
+
+							for (JsonElement curativeItemsElement : potionEffectsObj
+									.getAsJsonArray("curativeItems")) {
+								potionEffect.addCurativeItem(NameParser
+										.getItemStack(curativeItemsElement.getAsString()));
+							}
+
+							potionEffects.put(potionEffect, distanceY);
+
+						}
+
+						for (int biomeID : biomes) {
+							for (String blockName : blocks) {
+								Iterator<PotionEffect> iterator = potionEffects.keySet().iterator();
+								while (iterator.hasNext()) {
+									PotionEffect potionEffect = iterator.next();
+									traits.add(new CasteTrait(
+											biomeID, blockName,
+											potionEffects.get(potionEffect), potionEffect));
+								}
+							}
 						}
 
 					}
 
-					Castes.INSTANCE.registerTalent(new Caste(name, map));
+					Castes.INSTANCE.registerTalent(new Caste(name, traits));
 				}
 			}
 		}
@@ -273,6 +309,15 @@ public class RfMOptions extends OptionRegister {
 			if (Potion.potionTypes[i] != null && name.equals(Potion.potionTypes[i].getName())) {
 				return i;
 			}
+		}
+		return -1;
+	}
+
+	private int getBiomeID(String name) {
+		for (int i = 0; i < BiomeGenBase.getBiomeGenArray().length; i++) {
+			if (BiomeGenBase.getBiomeGenArray()[i] != null && BiomeGenBase
+					.getBiomeGenArray()[i].biomeName.equals(name))
+				return i;
 		}
 		return -1;
 	}

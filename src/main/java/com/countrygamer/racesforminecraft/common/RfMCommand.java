@@ -42,10 +42,11 @@ public class RfMCommand extends CommandBase {
 
 			RacePlayer racePlayer = RacePlayer.get(player);
 
-			sender.addChatMessage(new ChatComponentText(
-					player.getCommandSenderName() + "\'s race is " + racePlayer.getRace()
-							.getName()
-			));
+			if (!sender.getEntityWorld().isRemote)
+				sender.addChatMessage(new ChatComponentText(
+						player.getCommandSenderName() + "\'s race is " + racePlayer.getRace()
+								.getName()
+				));
 		}
 		else if (args[0].equals("set") && args[1].equals("race")) {
 
@@ -65,8 +66,9 @@ public class RfMCommand extends CommandBase {
 			}
 			else {
 				racePlayer.setRace(race);
-				sender.addChatMessage(new ChatComponentText(
-						"Set " + player.getCommandSenderName() + "\'s race to " + args[2]));
+				if (!sender.getEntityWorld().isRemote)
+					sender.addChatMessage(new ChatComponentText(
+							"Set " + player.getCommandSenderName() + "\'s race to " + args[2]));
 			}
 
 		}
@@ -83,28 +85,32 @@ public class RfMCommand extends CommandBase {
 
 			if (args[1].equals("skill")) {
 				if (racePlayer.hasSkill(Skills.INSTANCE.getSkillFromName(args[2]))) {
-					sender.addChatMessage(new ChatComponentText(
-									player.getCommandSenderName() + " has skill " + args[2])
-					);
+					if (!sender.getEntityWorld().isRemote)
+						sender.addChatMessage(new ChatComponentText(
+										player.getCommandSenderName() + " has skill " + args[2])
+						);
 				}
 				else {
-					sender.addChatMessage(new ChatComponentText(
-									player.getCommandSenderName() + " does not have skill "
-											+ args[2])
-					);
+					if (!sender.getEntityWorld().isRemote)
+						sender.addChatMessage(new ChatComponentText(
+										player.getCommandSenderName() + " does not have skill "
+												+ args[2])
+						);
 				}
 			}
 			else if (args[1].equals("caste")) {
 				if (racePlayer.hasCaste(Castes.INSTANCE.getCasteFromName(args[2]))) {
-					sender.addChatMessage(new ChatComponentText(
-									player.getCommandSenderName() + " has caste " + args[2])
-					);
+					if (!sender.getEntityWorld().isRemote)
+						sender.addChatMessage(new ChatComponentText(
+										player.getCommandSenderName() + " has caste " + args[2])
+						);
 				}
 				else {
-					sender.addChatMessage(new ChatComponentText(
-									player.getCommandSenderName() + " does not have caste "
-											+ args[2])
-					);
+					if (!sender.getEntityWorld().isRemote)
+						sender.addChatMessage(new ChatComponentText(
+										player.getCommandSenderName() + " does not have caste "
+												+ args[2])
+						);
 				}
 			}
 
@@ -124,16 +130,19 @@ public class RfMCommand extends CommandBase {
 				Skill skill = Skills.INSTANCE.getSkillFromName(args[2]);
 				if (skill != null) {
 					if (racePlayer.addSkill(skill)) {
-						sender.addChatMessage(new ChatComponentText(
-										"Added " + args[2] + " to " + player.getCommandSenderName()
-												+ "\'s skills")
-						);
+						if (!sender.getEntityWorld().isRemote)
+							sender.addChatMessage(new ChatComponentText(
+											"Added " + args[2] + " to " + player
+													.getCommandSenderName()
+													+ "\'s skills")
+							);
 					}
 					else {
-						sender.addChatMessage(new ChatComponentText(
-										player.getCommandSenderName() + " already has skill "
-												+ args[2])
-						);
+						if (!sender.getEntityWorld().isRemote)
+							sender.addChatMessage(new ChatComponentText(
+											player.getCommandSenderName() + " already has skill "
+													+ args[2])
+							);
 					}
 				}
 				else {
@@ -144,16 +153,19 @@ public class RfMCommand extends CommandBase {
 				Caste caste = Castes.INSTANCE.getCasteFromName(args[2]);
 				if (caste != null) {
 					if (racePlayer.addCaste(caste)) {
-						sender.addChatMessage(new ChatComponentText(
-										"Added " + args[2] + " to " + player.getCommandSenderName()
-												+ "\'s castes")
-						);
+						if (!sender.getEntityWorld().isRemote)
+							sender.addChatMessage(new ChatComponentText(
+											"Added " + args[2] + " to " + player
+													.getCommandSenderName()
+													+ "\'s castes")
+							);
 					}
 					else {
-						sender.addChatMessage(new ChatComponentText(
-										player.getCommandSenderName() + " already has caste "
-												+ args[2])
-						);
+						if (!sender.getEntityWorld().isRemote)
+							sender.addChatMessage(new ChatComponentText(
+											player.getCommandSenderName() + " already has caste "
+													+ args[2])
+							);
 					}
 				}
 				else {
@@ -176,17 +188,19 @@ public class RfMCommand extends CommandBase {
 				Skill skill = Skills.INSTANCE.getSkillFromName(args[2]);
 				if (skill != null) {
 					if (racePlayer.removeSkill(skill)) {
-						sender.addChatMessage(new ChatComponentText(
-										"Removed " + args[2] + " from " + player
-												.getCommandSenderName()
-												+ "\'s skills")
-						);
+						if (!sender.getEntityWorld().isRemote)
+							sender.addChatMessage(new ChatComponentText(
+											"Removed " + args[2] + " from " + player
+													.getCommandSenderName()
+													+ "\'s skills")
+							);
 					}
 					else {
-						sender.addChatMessage(new ChatComponentText(
-										player.getCommandSenderName() + " does not have skill "
-												+ args[2])
-						);
+						if (!sender.getEntityWorld().isRemote)
+							sender.addChatMessage(new ChatComponentText(
+											player.getCommandSenderName() + " does not have skill "
+													+ args[2])
+							);
 					}
 				}
 				else {
@@ -197,17 +211,19 @@ public class RfMCommand extends CommandBase {
 				Caste caste = Castes.INSTANCE.getCasteFromName(args[2]);
 				if (caste != null) {
 					if (racePlayer.removeCaste(caste)) {
-						sender.addChatMessage(new ChatComponentText(
-										"Removed " + args[2] + " from " + player
-												.getCommandSenderName()
-												+ "\'s castes")
-						);
+						if (!sender.getEntityWorld().isRemote)
+							sender.addChatMessage(new ChatComponentText(
+											"Removed " + args[2] + " from " + player
+													.getCommandSenderName()
+													+ "\'s castes")
+							);
 					}
 					else {
-						sender.addChatMessage(new ChatComponentText(
-										player.getCommandSenderName() + " does not have caste "
-												+ args[2])
-						);
+						if (!sender.getEntityWorld().isRemote)
+							sender.addChatMessage(new ChatComponentText(
+											player.getCommandSenderName() + " does not have caste "
+													+ args[2])
+							);
 					}
 				}
 				else {
@@ -227,7 +243,8 @@ public class RfMCommand extends CommandBase {
 	}
 
 	private void invalidCommand(ICommandSender sender) {
-		sender.addChatMessage(new ChatComponentText("Invalid Command"));
+		if (!sender.getEntityWorld().isRemote)
+			sender.addChatMessage(new ChatComponentText("Invalid Command"));
 	}
 
 	private EntityPlayer getRequestedPlayer(ICommandSender sender, String name) {

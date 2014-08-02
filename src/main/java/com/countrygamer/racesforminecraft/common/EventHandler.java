@@ -2,6 +2,7 @@ package com.countrygamer.racesforminecraft.common;
 
 import com.countrygamer.racesforminecraft.common.extended.RacePlayer;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -16,12 +17,14 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 public class EventHandler {
 
 	private boolean canRun(EntityPlayer player) {
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient()
+				|| player.capabilities.isCreativeMode)
 			return true;
 
 		RacePlayer racePlayer = RacePlayer.get(player);
 
-		if (racePlayer == null) return true;
+		if (racePlayer == null)
+			return true;
 
 		ItemStack heldStack = player.getHeldItem();
 
@@ -39,6 +42,8 @@ public class EventHandler {
 	public void playerInteract_Item(PlayerInteractEvent event) {
 		if (!this.canRun(event.entityPlayer)) {
 			event.setCanceled(true);
+			event.useBlock = Event.Result.DENY;
+			event.useItem = Event.Result.DENY;
 		}
 	}
 
@@ -52,7 +57,7 @@ public class EventHandler {
 	@SubscribeEvent
 	public void entityAttack(LivingAttackEvent event) {
 		if (event.entityLiving instanceof EntityPlayer) {
-			if (!this.canRun((EntityPlayer)event.entityLiving)) {
+			if (!this.canRun((EntityPlayer) event.entityLiving)) {
 				event.setCanceled(true);
 			}
 		}
@@ -60,7 +65,9 @@ public class EventHandler {
 
 	@SubscribeEvent
 	public void livingUpdate(LivingEvent.LivingUpdateEvent event) {
-		// TODO use this to check if the entity is walking over a block
+		if (event.entityLiving instanceof EntityPlayer) {
+			RacePlayer.get((EntityPlayer) event.entityLiving).applyEffects();
+		}
 
 	}
 

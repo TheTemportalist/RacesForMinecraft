@@ -151,7 +151,7 @@ public class RfMOptions extends OptionRegister {
 					JsonObject raceObject = element.getAsJsonObject();
 
 					HashSet<String> list = new HashSet<String>();
-					for (JsonElement listElement : raceObject.get("list").getAsJsonArray()) {
+					for (JsonElement listElement : raceObject.getAsJsonArray("list")) {
 						list.add(listElement.getAsString());
 					}
 
@@ -214,39 +214,50 @@ public class RfMOptions extends OptionRegister {
 					// get the skill name
 					String name = jsonObject.get("name").getAsString();
 
-					HashMap<String, HashSet<PotionEffect>> map =
-							new HashMap<String, HashSet<PotionEffect>>();
+					HashMap<String, HashMap<PotionEffect, Integer>> map =
+							new HashMap<String, HashMap<PotionEffect, Integer>>();
 					for (JsonElement blockAndEffect : jsonObject.getAsJsonArray("blocks")) {
 						if (!blockAndEffect.isJsonObject())
 							continue;
 						JsonObject blockAndEffectObj = blockAndEffect.getAsJsonObject();
 
-						String block = blockAndEffectObj.get("block").getAsString();
+						for (JsonElement blockElement : blockAndEffectObj.getAsJsonArray("block")) {
+							String block = blockElement.getAsString();
 
-						for (JsonElement effectElement : blockAndEffectObj
-								.getAsJsonArray("effects")) {
-							if (!effectElement.isJsonObject())
-								continue;
-							JsonObject effectObj = effectElement.getAsJsonObject();
+							HashMap<PotionEffect, Integer> effects = new HashMap<PotionEffect, Integer>();
 
-							int effectID = this.getPotionID(effectObj.get("name").getAsString());
-							if (effectID < 0)
-								continue;
+							for (JsonElement effectElement : blockAndEffectObj
+									.getAsJsonArray("effects")) {
+								if (!effectElement.isJsonObject())
+									continue;
+								JsonObject effectObj = effectElement.getAsJsonObject();
 
-							int duration = effectObj.get("duration").getAsInt();
-							int amplifier = effectObj.get("amplifier").getAsInt();
-							boolean isAmbient = effectObj.get("isAmbient").getAsBoolean();
+								int effectID = this
+										.getPotionID(effectObj.get("name").getAsString());
+								if (effectID < 0)
+									continue;
 
-							PotionEffect potionEffect = new PotionEffect(effectID, duration,
-									amplifier, isAmbient);
-							if (!effectObj.get("hasDefaultCurativeItems").getAsBoolean()) {
-								potionEffect.setCurativeItems(new ArrayList<ItemStack>());
+								int distanceY = effectObj.get("distanceY").getAsInt();
+								int duration = effectObj.get("duration").getAsInt();
+								int amplifier = effectObj.get("amplifier").getAsInt();
+								boolean isAmbient = effectObj.get("isAmbient").getAsBoolean();
+
+								PotionEffect potionEffect = new PotionEffect(effectID, duration,
+										amplifier, isAmbient);
+								if (!effectObj.get("hasDefaultCurativeItems").getAsBoolean()) {
+									potionEffect.setCurativeItems(new ArrayList<ItemStack>());
+								}
+								for (JsonElement itemElement : effectObj
+										.getAsJsonArray("curativeItems")) {
+									potionEffect.addCurativeItem(
+											NameParser.getItemStack(itemElement.getAsString()));
+								}
+
+								effects.put(potionEffect, distanceY);
+
 							}
-							for (JsonElement itemElement : effectObj
-									.getAsJsonArray("curativeItems")) {
-								potionEffect.addCurativeItem(
-										NameParser.getItemStack(itemElement.getAsString()));
-							}
+
+							map.put(block, effects);
 
 						}
 

@@ -18,10 +18,10 @@ import java.util.Iterator;
  */
 public class Caste extends AbstractTalent {
 
-	private HashMap<String, HashSet<PotionEffect>> map = null;
+	private HashMap<String, HashMap<PotionEffect, Integer>> map = null;
 	private HashSet<String> list = null;
 
-	public Caste(String name,  HashMap<String, HashSet<PotionEffect>> map) {
+	public Caste(String name, HashMap<String, HashMap<PotionEffect, Integer>> map) {
 		super(name);
 		this.map = map;
 		this.list = new HashSet<String>();
@@ -32,12 +32,18 @@ public class Caste extends AbstractTalent {
 	}
 
 	public void runEffectsForBlock(EntityPlayer player, RacePlayer racePlayer, Block block,
-			int meta) {
+			int meta, int distanceY) {
 		if (this.map != null) {
 			ItemStack blockStack = new ItemStack(block, 1, meta);
 			if (NameParser.isInList(blockStack, this.list)) {
-				for (PotionEffect potionEffect : this.map.get(NameParser.getName(blockStack))) {
-					player.addPotionEffect(potionEffect);
+				HashMap<PotionEffect, Integer> effects = this.map
+						.get(NameParser.getName(blockStack));
+				Iterator<PotionEffect> iterator = effects.keySet().iterator();
+				while (iterator.hasNext()) {
+					PotionEffect potionEffect = iterator.next();
+					if (distanceY <= effects.get(potionEffect)) {
+						player.addPotionEffect(new PotionEffect(potionEffect));
+					}
 				}
 			}
 		}

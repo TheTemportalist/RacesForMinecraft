@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.HashSet;
 
@@ -33,7 +34,7 @@ public class NameParser {
 
 	public static ItemStack getItemStack(String name) {
 		int endNameIndex = name.length();
-		int metadata = 0;
+		int metadata = OreDictionary.WILDCARD_VALUE;
 		if (name.matches("(.*):(.*):(.*)")) {
 			endNameIndex = name.lastIndexOf(':');
 			metadata = Integer.parseInt(name.substring(endNameIndex + 1, name.length()));

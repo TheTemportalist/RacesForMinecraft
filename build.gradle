@@ -44,7 +44,7 @@ configFile.withReader {
 }
 
 group = "com.countrygamer.racesforminecraft"
-archivesBaseName = "CoG-RacesForMinecraft"
+archivesBaseName = "RacesForMinecraft"
 
 dependencies {
     compile("com.countrygamer.cgo:CGOrigin:${config.minecraft_version}-3+:dev")

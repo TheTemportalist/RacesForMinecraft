@@ -16,7 +16,8 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
  */
 @Mod(modid = RfM.pluginID, name = RfM.pluginName, version = "@PLUGIN_VERSION@",
 		guiFactory = "",
-		modLanguage = "java"
+		modLanguage = "java",
+		dependencies = "required-after:Forge@[10.13,);required-after:cgo@[3.0.2,)"
 )
 public class RfM extends PluginWrapper {
 
@@ -63,7 +64,7 @@ public class RfM extends PluginWrapper {
 	public void postInit(FMLPostInitializationEvent event) {
 		super.postInitialize(event);
 
-		((RfMOptions)this.options()).registerPostInit();
+		((RfMOptions) this.options()).registerPostInit();
 
 	}
 

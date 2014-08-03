@@ -126,6 +126,14 @@ public class RacePlayer extends ExtendedEntity {
 		return this.race;
 	}
 
+	public HashSet<Skill> getSkills() {
+		return this.skills;
+	}
+
+	public HashSet<Caste> getCastes() {
+		return this.castes;
+	}
+
 	public boolean hasSkill(Skill skill) {
 		return this.skills.contains(skill);
 	}

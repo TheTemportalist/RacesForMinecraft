@@ -241,6 +241,24 @@ public class RfMOptions extends OptionRegister {
 							biomes.add(biomeID);
 						}
 
+						boolean biomeIsBlacklist = effectsObj.get("biomeIsBlacklist")
+								.getAsBoolean();
+
+						HashSet<Integer> applicableBiomes = new HashSet<Integer>();
+
+						for (int i = 0; i < BiomeGenBase.getBiomeGenArray().length; i++) {
+
+							boolean biomeIsInList = biomes
+									.contains(BiomeGenBase.getBiomeGenArray()[i].biomeID);
+
+							boolean isApplicable = (biomeIsBlacklist && !biomeIsInList)
+									|| (!biomeIsBlacklist && biomeIsInList);
+
+							if (isApplicable)
+								applicableBiomes.add(BiomeGenBase.getBiomeGenArray()[i].biomeID);
+
+						}
+
 						HashSet<String> blocks = new HashSet<String>();
 						for (JsonElement blockElement : effectsObj.getAsJsonArray("block")) {
 							blocks.add(blockElement.getAsString());
@@ -284,7 +302,7 @@ public class RfMOptions extends OptionRegister {
 
 						}
 
-						for (int biomeID : biomes) {
+						for (int biomeID : applicableBiomes) {
 							for (String blockName : blocks) {
 								Iterator<PotionEffect> iterator = potionEffects.keySet().iterator();
 								while (iterator.hasNext()) {

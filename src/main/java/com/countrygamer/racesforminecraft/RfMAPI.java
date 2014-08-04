@@ -14,6 +14,7 @@ import java.util.HashSet;
  *
  * @author CountryGamer
  */
+@Deprecated
 public class RfMAPI {
 
 	public static Race getRace(EntityPlayer player) {

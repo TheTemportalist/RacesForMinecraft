@@ -116,9 +116,15 @@ public class RacePlayer extends ExtendedEntity {
 		return false;
 	}
 
-	public void applyEffects() {
+	public void applyEffectsForBlock() {
 		for (Caste caste : this.castes) {
 			caste.runEffectsForBlock(this.player(), this);
+		}
+	}
+
+	public void applyEffectsForItem(ItemStack heldStack) {
+		for (Caste caste : this.castes) {
+			caste.runEffectsForItem(this.player(), this, heldStack);
 		}
 	}
 

@@ -228,21 +228,25 @@ public class RfMOptions extends OptionRegister {
 							continue;
 						JsonObject effectsObj = effectsElement.getAsJsonObject();
 
-						HashSet<Integer> biomes = new HashSet<Integer>();
-						for (JsonElement biomeElement : effectsObj.getAsJsonArray("biome")) {
-							String biomeName = biomeElement.getAsString();
-							int biomeID = this.getBiomeID(biomeName);
-							if (biomeID < 0) {
-								LogHelper.error(RfM.pluginName,
-										"Fatal error, biome with name " + biomeName
-												+ " does not exist");
-								continue;
-							}
-							biomes.add(biomeID);
+						boolean biomeIsBlacklist = true;
+						if (effectsObj.has("biomeIsBlacklist")) {
+							biomeIsBlacklist = effectsObj.get("biomeIsBlacklist").getAsBoolean();
 						}
 
-						boolean biomeIsBlacklist = effectsObj.get("biomeIsBlacklist")
-								.getAsBoolean();
+						HashSet<Integer> biomes = new HashSet<Integer>();
+						if (effectsObj.has("biome")) {
+							for (JsonElement biomeElement : effectsObj.getAsJsonArray("biome")) {
+								String biomeName = biomeElement.getAsString();
+								int biomeID = this.getBiomeID(biomeName);
+								if (biomeID < 0) {
+									LogHelper.error(RfM.pluginName,
+											"Fatal error, biome with name " + biomeName
+													+ " does not exist");
+									continue;
+								}
+								biomes.add(biomeID);
+							}
+						}
 
 						HashSet<Integer> applicableBiomes = new HashSet<Integer>();
 
@@ -259,9 +263,25 @@ public class RfMOptions extends OptionRegister {
 
 						}
 
+						if (!effectsObj.has("block") && !effectsObj.has("item")) {
+							LogHelper.error(RfM.pluginName,
+									"ERROR PARSING Castes.json! Missing both \'block\' AND"
+											+ " \'item\' lists. Must have at least one!");
+							return;
+						}
+
 						HashSet<String> blocks = new HashSet<String>();
-						for (JsonElement blockElement : effectsObj.getAsJsonArray("block")) {
-							blocks.add(blockElement.getAsString());
+						if (effectsObj.has("block")) {
+							for (JsonElement blockElement : effectsObj.getAsJsonArray("block")) {
+								blocks.add(blockElement.getAsString());
+							}
+						}
+
+						HashSet<String> items = new HashSet<String>();
+						if (effectsObj.has("item")) {
+							for (JsonElement itemElement : effectsObj.getAsJsonArray("item")) {
+								items.add(itemElement.getAsString());
+							}
 						}
 
 						HashMap<PotionEffect, Integer> potionEffects =
@@ -282,20 +302,26 @@ public class RfMOptions extends OptionRegister {
 								continue;
 							}
 
-							int distanceY = potionEffectsObj.get("distanceY").getAsInt();
+							int distanceY = 1;
+							if (potionEffectsObj.has("distanceY")) {
+								distanceY = potionEffectsObj.get("distanceY").getAsInt();
+							}
 							int duration = potionEffectsObj.get("duration").getAsInt();
 							int amplifier = potionEffectsObj.get("amplifier").getAsInt();
 
 							PotionEffect potionEffect = new PotionEffect(effectID, duration,
 									amplifier);
-							if (!potionEffectsObj.get("hasDefaultCurativeItems").getAsBoolean()) {
+							if (potionEffectsObj.has("hasDefaultCurativeItems") && !potionEffectsObj
+									.get("hasDefaultCurativeItems").getAsBoolean()) {
 								potionEffect.setCurativeItems(new ArrayList<ItemStack>());
 							}
 
-							for (JsonElement curativeItemsElement : potionEffectsObj
-									.getAsJsonArray("curativeItems")) {
-								potionEffect.addCurativeItem(NameParser
-										.getItemStack(curativeItemsElement.getAsString()));
+							if (potionEffectsObj.has("curativeItems")) {
+								for (JsonElement curativeItemsElement : potionEffectsObj
+										.getAsJsonArray("curativeItems")) {
+									potionEffect.addCurativeItem(NameParser
+											.getItemStack(curativeItemsElement.getAsString()));
+								}
 							}
 
 							potionEffects.put(potionEffect, distanceY);
@@ -310,6 +336,13 @@ public class RfMOptions extends OptionRegister {
 									traits.add(new CasteTrait(
 											biomeID, blockName,
 											potionEffects.get(potionEffect), potionEffect));
+								}
+							}
+							for (String itemName : items) {
+								Iterator<PotionEffect> iterator = potionEffects.keySet().iterator();
+								while (iterator.hasNext()) {
+									PotionEffect potionEffect = iterator.next();
+									traits.add(new CasteTrait(biomeID, itemName, potionEffect));
 								}
 							}
 						}

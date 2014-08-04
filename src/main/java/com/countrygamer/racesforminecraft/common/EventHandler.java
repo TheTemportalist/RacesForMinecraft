@@ -45,12 +45,20 @@ public class EventHandler {
 			event.useBlock = Event.Result.DENY;
 			event.useItem = Event.Result.DENY;
 		}
+		else {
+			RacePlayer.get(event.entityPlayer)
+					.applyEffectsForItem(event.entityPlayer.getHeldItem());
+		}
 	}
 
 	@SubscribeEvent
 	public void playerInteract_Entity(EntityInteractEvent event) {
 		if (!this.canRun(event.entityPlayer)) {
 			event.setCanceled(true);
+		}
+		else {
+			RacePlayer.get(event.entityPlayer).applyEffectsForItem(
+					event.entityPlayer.getHeldItem());
 		}
 	}
 
@@ -60,13 +68,17 @@ public class EventHandler {
 			if (!this.canRun((EntityPlayer) event.entityLiving)) {
 				event.setCanceled(true);
 			}
+			else {
+				RacePlayer.get((EntityPlayer) event.entityLiving)
+						.applyEffectsForItem(event.entityLiving.getHeldItem());
+			}
 		}
 	}
 
 	@SubscribeEvent
-	public void livingUpdate(LivingEvent.LivingUpdateEvent event) {
+	public void onlivingUpdate(LivingEvent.LivingUpdateEvent event) {
 		if (event.entityLiving instanceof EntityPlayer) {
-			RacePlayer.get((EntityPlayer) event.entityLiving).applyEffects();
+			RacePlayer.get((EntityPlayer) event.entityLiving).applyEffectsForBlock();
 		}
 
 	}

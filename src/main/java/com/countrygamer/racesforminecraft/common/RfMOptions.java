@@ -162,10 +162,26 @@ public class RfMOptions extends OptionRegister {
 						list.add(listElement.getAsString());
 					}
 
+					HashSet<String> inheritSkills = new HashSet<String>();
+					if (raceObject.has("inheritSkills")) {
+						for (JsonElement skillElement : raceObject
+								.getAsJsonArray("inheritSkills")) {
+							inheritSkills.add(skillElement.getAsString());
+						}
+					}
+
+					HashSet<String> inheritCastes = new HashSet<String>();
+					if (raceObject.has("inheritCastes")) {
+						for (JsonElement casteElement : raceObject
+								.getAsJsonArray("inheritCastes")) {
+							inheritCastes.add(casteElement.getAsString());
+						}
+					}
+
 					Races.INSTANCE.registerTalent(new Race(
 							raceObject.get("name").getAsString(),
 							raceObject.get("listIsBlacklist").getAsBoolean(),
-							list
+							list, inheritSkills, inheritCastes
 					));
 				}
 			}

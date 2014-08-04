@@ -150,6 +150,18 @@ public class RacePlayer extends ExtendedEntity {
 
 	public void setRace(Race race) {
 		this.race = race;
+		for (String inheritSkill : race.inheritSkills) {
+			Skill skill = Skills.INSTANCE.getSkillFromName(inheritSkill);
+			if (!this.skills.contains(skill)) {
+				this.skills.add(skill);
+			}
+		}
+		for (String inheritCaste : race.inheritCastes) {
+			Caste caste = Castes.INSTANCE.getCasteFromName(inheritCaste);
+			if (!this.castes.contains(caste)) {
+				this.castes.add(caste);
+			}
+		}
 		this.syncEntity();
 	}
 

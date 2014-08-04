@@ -15,26 +15,33 @@ import java.util.HashSet;
  */
 public class Race extends AbstractTalent {
 
-	private boolean isBlacklist = false;
-	private HashSet<String> list = null;
+	private final boolean isBlacklist;
+	private final HashSet<String> usableList;
+	public final HashSet<String> inheritSkills;
+	public final HashSet<String> inheritCastes;
 
 	/**
 	 * Expecting variables for this race
 	 *
-	 * @param isBlacklist Whether this race is using white or black list
-	 * @param list        A list of names (item or block names)
-	 *                    EX: "modid:itemname", "modid:blockname",
-	 *                    EX: "modid:itemname:metadata"
+	 * @param isBlacklist   Whether this race is using white or black usableList
+	 * @param usableList    A usableList of names (item or block names)
+	 *                      EX: "modid:itemname", "modid:blockname",
+	 *                      EX: "modid:itemname:metadata"
+	 * @param inheritSkills
+	 * @param inheritCastes
 	 */
-	public Race(String name, boolean isBlacklist, HashSet<String> list) {
+	public Race(String name, boolean isBlacklist, HashSet<String> usableList,
+			HashSet<String> inheritSkills, HashSet<String> inheritCastes) {
 		super(name);
 		this.isBlacklist = isBlacklist;
-		this.list = list;
+		this.usableList = usableList;
+		this.inheritSkills = inheritSkills;
+		this.inheritCastes = inheritCastes;
 
 	}
 
 	public boolean canUseItem(EntityPlayer player, RacePlayer racePlayer, ItemStack itemStack) {
-		boolean item_is_in_list = NameParser.isInList(itemStack, this.list);
+		boolean item_is_in_list = NameParser.isInList(itemStack, this.usableList);
 		return this.isBlacklist ? !item_is_in_list : item_is_in_list;
 	}
 

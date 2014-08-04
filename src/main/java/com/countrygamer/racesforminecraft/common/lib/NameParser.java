@@ -18,6 +18,10 @@ public class NameParser {
 	public static String getName(ItemStack itemStack) {
 		String name;
 
+		if (itemStack == null) {
+			return "";
+		}
+
 		Item item = itemStack.getItem();
 		// is item
 		if (Block.getBlockFromItem(item) == Blocks.air) {
@@ -49,6 +53,9 @@ public class NameParser {
 
 	public static boolean isInList(ItemStack itemStack, HashSet<String> list) {
 		String itemStack_nonMetadata, itemStack_fullName;
+
+		if (itemStack == null)
+			return false;
 
 		itemStack_nonMetadata = NameParser.getName(itemStack);
 		itemStack_fullName = itemStack_nonMetadata + ":" + itemStack.getItemDamage();

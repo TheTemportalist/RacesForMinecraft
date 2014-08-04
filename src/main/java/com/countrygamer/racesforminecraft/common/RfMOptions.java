@@ -2,10 +2,10 @@ package com.countrygamer.racesforminecraft.common;
 
 import com.countrygamer.cgo.common.lib.LogHelper;
 import com.countrygamer.cgo.wrapper.common.registries.OptionRegister;
+import com.countrygamer.racesforminecraft.api.talent.CasteTrait;
 import com.countrygamer.racesforminecraft.common.init.Castes;
 import com.countrygamer.racesforminecraft.common.init.Races;
 import com.countrygamer.racesforminecraft.common.init.Skills;
-import com.countrygamer.racesforminecraft.api.talent.CasteTrait;
 import com.countrygamer.racesforminecraft.common.lib.NameParser;
 import com.countrygamer.racesforminecraft.common.talent.Caste;
 import com.countrygamer.racesforminecraft.common.talent.Race;
@@ -214,9 +214,9 @@ public class RfMOptions extends OptionRegister {
 					// Create the skill with its name
 					Skill skill = new Skill(name);
 					// add the blacklist
-                    skill.getBlacklist().addAll(blackList);
+					skill.getBlacklist().addAll(blackList);
 					// add the whitelist
-                    skill.getWhitelist().addAll(whitelist);
+					skill.getWhitelist().addAll(whitelist);
 					// register the skill
 					Skills.INSTANCE.registerTalent(skill);
 				}
@@ -249,7 +249,11 @@ public class RfMOptions extends OptionRegister {
 						}
 
 						HashSet<Integer> biomes = new HashSet<Integer>();
+
 						if (effectsObj.has("biome")) {
+
+							HashSet<Integer> parsableBiomes = new HashSet<Integer>();
+
 							for (JsonElement biomeElement : effectsObj.getAsJsonArray("biome")) {
 								String biomeName = biomeElement.getAsString();
 								int biomeID = this.getBiomeID(biomeName);
@@ -259,22 +263,26 @@ public class RfMOptions extends OptionRegister {
 													+ " does not exist");
 									continue;
 								}
-								biomes.add(biomeID);
+								parsableBiomes.add(biomeID);
 							}
-						}
 
-						HashSet<Integer> applicableBiomes = new HashSet<Integer>();
+							for (int i = 0; i < BiomeGenBase.getBiomeGenArray().length; i++) {
 
-						for (int i = 0; i < BiomeGenBase.getBiomeGenArray().length; i++) {
+								if (BiomeGenBase.getBiomeGenArray()[i] == null)
+									continue;
 
-							boolean biomeIsInList = biomes
-									.contains(BiomeGenBase.getBiomeGenArray()[i].biomeID);
+								boolean biomeIsInList =
+										parsableBiomes
+												.contains(
+														BiomeGenBase.getBiomeGenArray()[i].biomeID);
 
-							boolean isApplicable = (biomeIsBlacklist && !biomeIsInList)
-									|| (!biomeIsBlacklist && biomeIsInList);
+								boolean isApplicable = (biomeIsBlacklist && !biomeIsInList)
+										|| (!biomeIsBlacklist && biomeIsInList);
 
-							if (isApplicable)
-								applicableBiomes.add(BiomeGenBase.getBiomeGenArray()[i].biomeID);
+								if (isApplicable)
+									biomes.add(BiomeGenBase.getBiomeGenArray()[i].biomeID);
+
+							}
 
 						}
 
@@ -343,7 +351,7 @@ public class RfMOptions extends OptionRegister {
 
 						}
 
-						for (int biomeID : applicableBiomes) {
+						for (int biomeID : biomes) {
 							for (String blockName : blocks) {
 								Iterator<PotionEffect> iterator = potionEffects.keySet().iterator();
 								while (iterator.hasNext()) {

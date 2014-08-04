@@ -1,6 +1,6 @@
 package com.countrygamer.racesforminecraft.common.talent;
 
-import com.countrygamer.racesforminecraft.common.extended.RacePlayer;
+import com.countrygamer.racesforminecraft.api.talent.ISkill;
 import com.countrygamer.racesforminecraft.common.lib.NameParser;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -12,53 +12,51 @@ import java.util.HashSet;
  *
  * @author CountryGamer
  */
-public class Skill extends AbstractTalent {
+public class Skill extends AbstractTalent implements ISkill
+{
+	private final HashSet<String> blackList = new HashSet<String>();
+    private final HashSet<String> whiteList = new HashSet<String>();
 
-	private HashSet<String> blackList = null;
-	private HashSet<String> whiteList = null;
+    public Skill(String name)
+    {
+        super(name);
+    }
 
-	public Skill(String name) {
-		super(name);
+    @Override
+    public HashSet<String> getBlacklist()
+    {
+        return blackList;
+    }
 
-	}
-	/**
-	 * Sets the respective list. Overwrites the corresponding list.
-	 *
-	 * @param isBlackList What type of list
-	 * @param list        The list of names
-	 */
-	public void addList(boolean isBlackList, HashSet<String> list) {
-		if (isBlackList) {
-			this.blackList = list;
-		}
-		else {
-			this.whiteList = list;
-		}
-	}
+    @Override
+    public HashSet<String> getWhitelist()
+    {
+        return whiteList;
+    }
 
-	public boolean hasItem(ItemStack itemStack) {
-		return this.hasItem(itemStack, true) || this.hasItem(itemStack, false);
-	}
+    @Override
+    public boolean hasItem(ItemStack itemStack)
+    {
+        return this.hasItem(itemStack, true) || this.hasItem(itemStack, false);
+    }
 
-	private boolean hasItem(ItemStack itemStack, Boolean checkBlackList) {
+    private boolean hasItem(ItemStack itemStack, boolean checkBlackList) {
 		if (checkBlackList) {
-			if (this.blackList != null && NameParser.isInList(itemStack, this.blackList)) {
+			if (!this.blackList.isEmpty() && NameParser.isInList(itemStack, this.blackList)) {
 				return true;
 			}
 		}
 		else {
-			if (this.whiteList != null && NameParser.isInList(itemStack, this.whiteList)) {
+			if (!this.whiteList.isEmpty() && NameParser.isInList(itemStack, this.whiteList)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public boolean canUseItem(EntityPlayer player, RacePlayer racePlayer, ItemStack itemStack) {
-		if (this.hasItem(itemStack, true)) {
-			return true;
-		}
-		return false;
-	}
+    @Override
+	public boolean canUseItem(EntityPlayer player, ItemStack itemStack) {
+        return this.hasItem(itemStack, true);
+    }
 
 }

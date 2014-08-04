@@ -1,7 +1,7 @@
 package com.countrygamer.racesforminecraft.common.init;
 
-import com.countrygamer.racesforminecraft.common.talent.AbstractTalent;
-import com.countrygamer.racesforminecraft.common.talent.Race;
+import com.countrygamer.racesforminecraft.api.talent.IRace;
+import com.countrygamer.racesforminecraft.api.talent.ITalent;
 
 /**
  * @author CountryGamer
@@ -10,16 +10,15 @@ public class Races extends Talents {
 
 	public static final Races INSTANCE = new Races();
 
-	public Race getRaceFromName(String name) {
-		AbstractTalent talent = super.getTalentFromName(name);
+	public IRace getRaceFromName(String name) {
+		ITalent talent = super.getTalentFromName(name);
 		if (talent != null) {
-			return (Race)talent;
+			return (IRace)talent;
 		}
 		return null;
 	}
 
-	public Race getDefault() {
-		return (Race)this.talents.get("default");
+	public IRace getDefault() {
+		return (IRace)this.talents.get("default");
 	}
-
 }

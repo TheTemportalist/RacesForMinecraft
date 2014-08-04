@@ -5,7 +5,7 @@ import com.countrygamer.cgo.wrapper.common.registries.OptionRegister;
 import com.countrygamer.racesforminecraft.common.init.Castes;
 import com.countrygamer.racesforminecraft.common.init.Races;
 import com.countrygamer.racesforminecraft.common.init.Skills;
-import com.countrygamer.racesforminecraft.common.lib.CasteTrait;
+import com.countrygamer.racesforminecraft.api.talent.CasteTrait;
 import com.countrygamer.racesforminecraft.common.lib.NameParser;
 import com.countrygamer.racesforminecraft.common.talent.Caste;
 import com.countrygamer.racesforminecraft.common.talent.Race;
@@ -214,12 +214,11 @@ public class RfMOptions extends OptionRegister {
 					// Create the skill with its name
 					Skill skill = new Skill(name);
 					// add the blacklist
-					skill.addList(true, blackList);
+                    skill.getBlacklist().addAll(blackList);
 					// add the whitelist
-					skill.addList(false, whitelist);
+                    skill.getWhitelist().addAll(whitelist);
 					// register the skill
 					Skills.INSTANCE.registerTalent(skill);
-
 				}
 			}
 		}

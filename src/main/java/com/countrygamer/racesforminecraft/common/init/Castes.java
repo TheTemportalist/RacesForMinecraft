@@ -1,7 +1,7 @@
 package com.countrygamer.racesforminecraft.common.init;
 
-import com.countrygamer.racesforminecraft.common.talent.AbstractTalent;
-import com.countrygamer.racesforminecraft.common.talent.Caste;
+import com.countrygamer.racesforminecraft.api.talent.ICaste;
+import com.countrygamer.racesforminecraft.api.talent.ITalent;
 
 /**
  * @author CountryGamer
@@ -10,10 +10,10 @@ public class Castes extends Talents {
 
 	public static final Castes INSTANCE = new Castes();
 
-	public Caste getCasteFromName(String name) {
-		AbstractTalent talent = super.getTalentFromName(name);
+	public ICaste getCasteFromName(String name) {
+        ITalent talent = super.getTalentFromName(name);
 		if (talent != null) {
-			return (Caste)talent;
+			return (ICaste)talent;
 		}
 		return null;
 	}

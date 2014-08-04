@@ -1,13 +1,13 @@
 package com.countrygamer.racesforminecraft.common;
 
 import com.countrygamer.cgo.common.lib.util.Player;
+import com.countrygamer.racesforminecraft.api.talent.ICaste;
+import com.countrygamer.racesforminecraft.api.talent.IRace;
+import com.countrygamer.racesforminecraft.api.talent.ISkill;
 import com.countrygamer.racesforminecraft.common.extended.RacePlayer;
 import com.countrygamer.racesforminecraft.common.init.Castes;
 import com.countrygamer.racesforminecraft.common.init.Races;
 import com.countrygamer.racesforminecraft.common.init.Skills;
-import com.countrygamer.racesforminecraft.common.talent.Caste;
-import com.countrygamer.racesforminecraft.common.talent.Race;
-import com.countrygamer.racesforminecraft.common.talent.Skill;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -60,7 +60,7 @@ public class RfMCommand extends CommandBase {
 
 			RacePlayer racePlayer = RacePlayer.get(player);
 
-			Race race = Races.INSTANCE.getRaceFromName(args[2]);
+			IRace race = Races.INSTANCE.getRaceFromName(args[2]);
 			if (race == null) {
 				this.invalidCommand(sender);
 			}
@@ -127,7 +127,7 @@ public class RfMCommand extends CommandBase {
 			RacePlayer racePlayer = RacePlayer.get(player);
 
 			if (args[1].equals("skill")) {
-				Skill skill = Skills.INSTANCE.getSkillFromName(args[2]);
+				ISkill skill = Skills.INSTANCE.getSkillFromName(args[2]);
 				if (skill != null) {
 					if (racePlayer.addSkill(skill)) {
 						if (!sender.getEntityWorld().isRemote)
@@ -150,7 +150,7 @@ public class RfMCommand extends CommandBase {
 				}
 			}
 			else if (args[1].equals("caste")) {
-				Caste caste = Castes.INSTANCE.getCasteFromName(args[2]);
+				ICaste caste = Castes.INSTANCE.getCasteFromName(args[2]);
 				if (caste != null) {
 					if (racePlayer.addCaste(caste)) {
 						if (!sender.getEntityWorld().isRemote)
@@ -185,7 +185,7 @@ public class RfMCommand extends CommandBase {
 			RacePlayer racePlayer = RacePlayer.get(player);
 
 			if (args[1].equals("skill")) {
-				Skill skill = Skills.INSTANCE.getSkillFromName(args[2]);
+                ISkill skill = Skills.INSTANCE.getSkillFromName(args[2]);
 				if (skill != null) {
 					if (racePlayer.removeSkill(skill)) {
 						if (!sender.getEntityWorld().isRemote)
@@ -208,7 +208,7 @@ public class RfMCommand extends CommandBase {
 				}
 			}
 			else if (args[1].equals("caste")) {
-				Caste caste = Castes.INSTANCE.getCasteFromName(args[2]);
+				ICaste caste = Castes.INSTANCE.getCasteFromName(args[2]);
 				if (caste != null) {
 					if (racePlayer.removeCaste(caste)) {
 						if (!sender.getEntityWorld().isRemote)

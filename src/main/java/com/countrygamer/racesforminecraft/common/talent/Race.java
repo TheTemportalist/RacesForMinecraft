@@ -1,6 +1,6 @@
 package com.countrygamer.racesforminecraft.common.talent;
 
-import com.countrygamer.racesforminecraft.common.extended.RacePlayer;
+import com.countrygamer.racesforminecraft.api.talent.IRace;
 import com.countrygamer.racesforminecraft.common.lib.NameParser;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,12 +13,12 @@ import java.util.HashSet;
  *
  * @author CountryGamer
  */
-public class Race extends AbstractTalent {
-
+public class Race extends AbstractTalent implements IRace
+{
 	private final boolean isBlacklist;
 	private final HashSet<String> usableList;
-	public final HashSet<String> inheritSkills;
-	public final HashSet<String> inheritCastes;
+    private final HashSet<String> inheritSkills;
+    private final HashSet<String> inheritCastes;
 
 	/**
 	 * Expecting variables for this race
@@ -40,9 +40,33 @@ public class Race extends AbstractTalent {
 
 	}
 
-	public boolean canUseItem(EntityPlayer player, RacePlayer racePlayer, ItemStack itemStack) {
+    @Override
+	public boolean canUseItem(EntityPlayer player, ItemStack itemStack) {
 		boolean item_is_in_list = NameParser.isInList(itemStack, this.usableList);
 		return this.isBlacklist ? !item_is_in_list : item_is_in_list;
 	}
 
+    @Override
+    public boolean isBlacklist()
+    {
+        return isBlacklist;
+    }
+
+    @Override
+    public HashSet<String> getUsableList()
+    {
+        return usableList;
+    }
+
+    @Override
+    public HashSet<String> getInheritSkills()
+    {
+        return inheritSkills;
+    }
+
+    @Override
+    public HashSet<String> getInheritCastes()
+    {
+        return inheritCastes;
+    }
 }

@@ -1,7 +1,7 @@
 package com.countrygamer.racesforminecraft.common.talent;
 
-import com.countrygamer.racesforminecraft.common.extended.RacePlayer;
-import com.countrygamer.racesforminecraft.common.lib.CasteTrait;
+import com.countrygamer.racesforminecraft.api.talent.CasteTrait;
+import com.countrygamer.racesforminecraft.api.talent.ICaste;
 import com.countrygamer.racesforminecraft.common.lib.NameParser;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,10 +18,10 @@ import java.util.Iterator;
  *
  * @author CountryGamer
  */
-public class Caste extends AbstractTalent {
-
-	private HashSet<CasteTrait> traits = null;
-	private HashSet<String> list = null;
+public class Caste extends AbstractTalent implements ICaste
+{
+	private final HashSet<CasteTrait> traits;
+	private final HashSet<String> list;
 
 	public Caste(String name, HashSet<CasteTrait> traits) {
 		super(name);
@@ -35,14 +35,21 @@ public class Caste extends AbstractTalent {
 		}
 	}
 
-	private int[] getXYZ(EntityPlayer player) {
+    @Override
+    public HashSet<CasteTrait> getTraits()
+    {
+        return traits;
+    }
+
+    private int[] getXYZ(EntityPlayer player) {
 		return new int[] {
 				(int) Math.floor(player.posX), (int) Math.floor(player.posY - player.getYOffset()),
 				(int) Math.floor(player.posZ)
 		};
 	}
 
-	public void runEffectsForItem(EntityPlayer player, RacePlayer racePlayer, ItemStack itemStack) {
+    @Override
+	public void runEffectsForItem(EntityPlayer player, ItemStack itemStack) {
 		int[] xyz = this.getXYZ(player);
 		if (NameParser.isInList(itemStack, this.list)) {
 			for (CasteTrait trait : this.traits) {
@@ -56,7 +63,8 @@ public class Caste extends AbstractTalent {
 		}
 	}
 
-	public void runEffectsForBlock(EntityPlayer player, RacePlayer racePlayer) {
+    @Override
+	public void runEffectsForBlock(EntityPlayer player) {
 		int[] xyz = this.getXYZ(player);
 		int y1 = xyz[1];
 		Block block;

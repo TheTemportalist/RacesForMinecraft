@@ -2,12 +2,12 @@ package com.countrygamer.racesforminecraft.common.extended;
 
 import com.countrygamer.cgo.wrapper.common.extended.ExtendedEntity;
 import com.countrygamer.cgo.wrapper.common.extended.ExtendedEntityHandler;
+import com.countrygamer.racesforminecraft.api.talent.ICaste;
+import com.countrygamer.racesforminecraft.api.talent.IRace;
+import com.countrygamer.racesforminecraft.api.talent.ISkill;
 import com.countrygamer.racesforminecraft.common.init.Castes;
 import com.countrygamer.racesforminecraft.common.init.Races;
 import com.countrygamer.racesforminecraft.common.init.Skills;
-import com.countrygamer.racesforminecraft.common.talent.Caste;
-import com.countrygamer.racesforminecraft.common.talent.Race;
-import com.countrygamer.racesforminecraft.common.talent.Skill;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,69 +34,77 @@ public class RacePlayer extends ExtendedEntity {
 
 	private boolean hasLoggedInBefore = false;
 
-	private Race race = null;
-	private HashSet<Skill> skills = new HashSet<Skill>();
-	private HashSet<Caste> castes = new HashSet<Caste>();
+	private IRace race = null;
+	private HashSet<ISkill> skills = new HashSet<ISkill>();
+	private HashSet<ICaste> castes = new HashSet<ICaste>();
 
-	public RacePlayer(EntityPlayer player) {
-		super(player);
+    public RacePlayer(EntityPlayer player)
+    {
+        super(player);
 
-	}
+    }
 
-	@Override
-	public void saveNBTData(NBTTagCompound tagCom) {
+    @Override
+    public void saveNBTData(NBTTagCompound tagCom)
+    {
 
-		tagCom.setBoolean("hasLoggedIn", this.hasLoggedInBefore);
+        tagCom.setBoolean("hasLoggedIn", this.hasLoggedInBefore);
 
-		if (this.race != null) {
-			tagCom.setString("race", this.race.getName());
-		}
+        if (this.race != null)
+        {
+            tagCom.setString("race", this.race.getName());
+        }
 
-		NBTTagList skillList = new NBTTagList();
-		for (Skill skill : this.skills) {
-			NBTTagCompound skillTag = new NBTTagCompound();
-			skillTag.setString("name", skill.getName());
-			skillList.appendTag(skillTag);
-		}
-		tagCom.setTag("skills", skillList);
+        NBTTagList skillList = new NBTTagList();
+        for (ISkill skill : this.skills)
+        {
+            NBTTagCompound skillTag = new NBTTagCompound();
+            skillTag.setString("name", skill.getName());
+            skillList.appendTag(skillTag);
+        }
+        tagCom.setTag("skills", skillList);
 
-		NBTTagList casteList = new NBTTagList();
-		for (Caste caste : this.castes) {
-			NBTTagCompound casteTag = new NBTTagCompound();
-			casteTag.setString("name", caste.getName());
-			casteList.appendTag(casteTag);
-		}
-		tagCom.setTag("castes", casteList);
+        NBTTagList casteList = new NBTTagList();
+        for (ICaste caste : this.castes)
+        {
+            NBTTagCompound casteTag = new NBTTagCompound();
+            casteTag.setString("name", caste.getName());
+            casteList.appendTag(casteTag);
+        }
+        tagCom.setTag("castes", casteList);
 
-	}
+    }
 
-	@Override
-	public void loadNBTData(NBTTagCompound tagCom) {
+    @Override
+    public void loadNBTData(NBTTagCompound tagCom)
+    {
 
-		this.hasLoggedInBefore = tagCom.getBoolean("hasLoggedIn");
+        this.hasLoggedInBefore = tagCom.getBoolean("hasLoggedIn");
 
-		this.race = null;
-		if (tagCom.hasKey("race")) {
-			this.race = Races.INSTANCE.getRaceFromName(tagCom.getString("race"));
-		}
-		else {
-			this.race = Races.INSTANCE.getDefault();
-		}
+        this.race = null;
+        if (tagCom.hasKey("race"))
+        {
+            this.race = Races.INSTANCE.getRaceFromName(tagCom.getString("race"));
+        }
+        else
+        {
+            this.race = Races.INSTANCE.getDefault();
+        }
 
-		this.skills = new HashSet<Skill>();
-		NBTTagList skillList = tagCom.getTagList("skills", 10);
-		for (int i = 0; i < skillList.tagCount(); i++) {
-			NBTTagCompound skillTag = skillList.getCompoundTagAt(i);
-			Skill skill = Skills.INSTANCE.getSkillFromName(skillTag.getString("name"));
-			if (skill != null)
-				this.skills.add(skill);
-		}
+        this.skills = new HashSet<ISkill>();
+        NBTTagList skillList = tagCom.getTagList("skills", 10);
+        for (int i = 0; i < skillList.tagCount(); i++)
+        {
+            NBTTagCompound skillTag = skillList.getCompoundTagAt(i);
+            ISkill skill = Skills.INSTANCE.getSkillFromName(skillTag.getString("name"));
+            if (skill != null) this.skills.add(skill);
+        }
 
-		this.castes = new HashSet<Caste>();
+        this.castes = new HashSet<ICaste>();
 		NBTTagList casteList = tagCom.getTagList("castes", 10);
 		for (int i = 0; i < casteList.tagCount(); i++) {
 			NBTTagCompound casteTag = casteList.getCompoundTagAt(i);
-			Caste caste = Castes.INSTANCE.getCasteFromName(casteTag.getString("name"));
+			ICaste caste = Castes.INSTANCE.getCasteFromName(casteTag.getString("name"));
 			if (caste != null)
 				this.castes.add(caste);
 		}
@@ -104,60 +112,60 @@ public class RacePlayer extends ExtendedEntity {
 	}
 
 	public boolean canUseItem(ItemStack itemStack) {
-		for (Skill skill : this.skills) {
+		for (ISkill skill : this.skills) {
 			if (skill.hasItem(itemStack)) {
-				return skill.canUseItem(this.player(), this, itemStack);
+				return skill.canUseItem(this.player(), itemStack);
 			}
 		}
 		if (this.race != null) {
-			return this.race.canUseItem(this.player(), this, itemStack);
+			return this.race.canUseItem(this.player(), itemStack);
 		}
 		// If no race, then make sure player cannot do anything >:D
 		return false;
 	}
 
 	public void applyEffectsForBlock() {
-		for (Caste caste : this.castes) {
-			caste.runEffectsForBlock(this.player(), this);
+		for (ICaste caste : this.castes) {
+			caste.runEffectsForBlock(this.player());
 		}
 	}
 
 	public void applyEffectsForItem(ItemStack heldStack) {
-		for (Caste caste : this.castes) {
-			caste.runEffectsForItem(this.player(), this, heldStack);
+		for (ICaste caste : this.castes) {
+			caste.runEffectsForItem(this.player(), heldStack);
 		}
 	}
 
-	public Race getRace() {
+	public IRace getRace() {
 		return this.race;
 	}
 
-	public HashSet<Skill> getSkills() {
+	public HashSet<ISkill> getSkills() {
 		return this.skills;
 	}
 
-	public HashSet<Caste> getCastes() {
+	public HashSet<ICaste> getCastes() {
 		return this.castes;
 	}
 
-	public boolean hasSkill(Skill skill) {
+	public boolean hasSkill(ISkill skill) {
 		return this.skills.contains(skill);
 	}
 
-	public boolean hasCaste(Caste caste) {
+	public boolean hasCaste(ICaste caste) {
 		return this.castes.contains(caste);
 	}
 
-	public void setRace(Race race) {
+	public void setRace(IRace race) {
 		this.race = race;
-		for (String inheritSkill : race.inheritSkills) {
-			Skill skill = Skills.INSTANCE.getSkillFromName(inheritSkill);
+		for (String inheritSkill : race.getInheritSkills()) {
+            ISkill skill = Skills.INSTANCE.getSkillFromName(inheritSkill);
 			if (!this.skills.contains(skill)) {
 				this.skills.add(skill);
 			}
 		}
-		for (String inheritCaste : race.inheritCastes) {
-			Caste caste = Castes.INSTANCE.getCasteFromName(inheritCaste);
+		for (String inheritCaste : race.getInheritCastes()) {
+			ICaste caste = Castes.INSTANCE.getCasteFromName(inheritCaste);
 			if (!this.castes.contains(caste)) {
 				this.castes.add(caste);
 			}
@@ -165,7 +173,7 @@ public class RacePlayer extends ExtendedEntity {
 		this.syncEntity();
 	}
 
-	public boolean addSkill(Skill skill) {
+	public boolean addSkill(ISkill skill) {
 		if (!this.skills.contains(skill)) {
 			this.skills.add(skill);
 			this.syncEntity();
@@ -174,7 +182,7 @@ public class RacePlayer extends ExtendedEntity {
 		return false;
 	}
 
-	public boolean addCaste(Caste caste) {
+	public boolean addCaste(ICaste caste) {
 		if (!this.castes.contains(caste)) {
 			this.castes.add(caste);
 			this.syncEntity();
@@ -183,7 +191,7 @@ public class RacePlayer extends ExtendedEntity {
 		return false;
 	}
 
-	public boolean removeSkill(Skill skill) {
+	public boolean removeSkill(ISkill skill) {
 		if (this.skills.contains(skill)) {
 			this.skills.remove(skill);
 			this.syncEntity();
@@ -192,7 +200,7 @@ public class RacePlayer extends ExtendedEntity {
 		return false;
 	}
 
-	public boolean removeCaste(Caste caste) {
+	public boolean removeCaste(ICaste caste) {
 		if (this.castes.contains(caste)) {
 			this.castes.remove(caste);
 			this.syncEntity();

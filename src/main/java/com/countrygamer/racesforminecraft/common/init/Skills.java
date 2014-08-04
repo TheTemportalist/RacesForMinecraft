@@ -1,7 +1,7 @@
 package com.countrygamer.racesforminecraft.common.init;
 
-import com.countrygamer.racesforminecraft.common.talent.AbstractTalent;
-import com.countrygamer.racesforminecraft.common.talent.Skill;
+import com.countrygamer.racesforminecraft.api.talent.ISkill;
+import com.countrygamer.racesforminecraft.api.talent.ITalent;
 
 /**
  * @author CountryGamer
@@ -10,10 +10,10 @@ public class Skills extends Talents {
 
 	public static final Skills INSTANCE = new Skills();
 
-	public Skill getSkillFromName(String name) {
-		AbstractTalent talent = super.getTalentFromName(name);
+	public ISkill getSkillFromName(String name) {
+		ITalent talent = super.getTalentFromName(name);
 		if (talent != null) {
-			return (Skill)talent;
+			return (ISkill)talent;
 		}
 		return null;
 	}

@@ -1,8 +1,8 @@
 package com.countrygamer.racesforminecraft.common.talent;
 
+import com.countrygamer.cgo.common.lib.NameParser;
 import com.countrygamer.racesforminecraft.api.talent.CasteTrait;
 import com.countrygamer.racesforminecraft.api.talent.ICaste;
-import com.countrygamer.racesforminecraft.common.lib.NameParser;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -18,8 +18,7 @@ import java.util.Iterator;
  *
  * @author CountryGamer
  */
-public class Caste extends AbstractTalent implements ICaste
-{
+public class Caste extends AbstractTalent implements ICaste {
 	private final HashSet<CasteTrait> traits;
 	private final HashSet<String> list;
 
@@ -35,20 +34,19 @@ public class Caste extends AbstractTalent implements ICaste
 		}
 	}
 
-    @Override
-    public HashSet<CasteTrait> getTraits()
-    {
-        return traits;
-    }
+	@Override
+	public HashSet<CasteTrait> getTraits() {
+		return traits;
+	}
 
-    private int[] getXYZ(EntityPlayer player) {
+	private int[] getXYZ(EntityPlayer player) {
 		return new int[] {
 				(int) Math.floor(player.posX), (int) Math.floor(player.posY - player.getYOffset()),
 				(int) Math.floor(player.posZ)
 		};
 	}
 
-    @Override
+	@Override
 	public void runEffectsForItem(EntityPlayer player, ItemStack itemStack) {
 		int[] xyz = this.getXYZ(player);
 		if (NameParser.isInList(itemStack, this.list)) {
@@ -63,7 +61,7 @@ public class Caste extends AbstractTalent implements ICaste
 		}
 	}
 
-    @Override
+	@Override
 	public void runEffectsForBlock(EntityPlayer player) {
 		int[] xyz = this.getXYZ(player);
 		int y1 = xyz[1];

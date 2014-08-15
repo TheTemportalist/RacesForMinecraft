@@ -1,12 +1,12 @@
 package com.countrygamer.racesforminecraft.common;
 
 import com.countrygamer.cgo.common.lib.LogHelper;
+import com.countrygamer.cgo.common.lib.NameParser;
 import com.countrygamer.cgo.wrapper.common.registries.OptionRegister;
 import com.countrygamer.racesforminecraft.api.talent.CasteTrait;
 import com.countrygamer.racesforminecraft.common.init.Castes;
 import com.countrygamer.racesforminecraft.common.init.Races;
 import com.countrygamer.racesforminecraft.common.init.Skills;
-import com.countrygamer.racesforminecraft.common.lib.NameParser;
 import com.countrygamer.racesforminecraft.common.talent.Caste;
 import com.countrygamer.racesforminecraft.common.talent.Race;
 import com.countrygamer.racesforminecraft.common.talent.Skill;

@@ -16,7 +16,6 @@ lib_managed/
 src_managed/
 project/boot/
 project/plugins/project/
-out/
 
 # Scala-IDE specific
 .scala_dependencies
@@ -45,4 +44,5 @@ gradlew
 gradlew.bat
 output
 run
+run_server
 test

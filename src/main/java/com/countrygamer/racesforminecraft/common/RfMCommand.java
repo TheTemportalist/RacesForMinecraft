@@ -1,6 +1,6 @@
 package com.countrygamer.racesforminecraft.common;
 
-import com.countrygamer.cgo.common.lib.util.Player;
+import com.countrygamer.cgo.library.common.utility.Player;
 import com.countrygamer.racesforminecraft.api.talent.ICaste;
 import com.countrygamer.racesforminecraft.api.talent.IRace;
 import com.countrygamer.racesforminecraft.api.talent.ISkill;
@@ -185,7 +185,7 @@ public class RfMCommand extends CommandBase {
 			RacePlayer racePlayer = RacePlayer.get(player);
 
 			if (args[1].equals("skill")) {
-                ISkill skill = Skills.INSTANCE.getSkillFromName(args[2]);
+				ISkill skill = Skills.INSTANCE.getSkillFromName(args[2]);
 				if (skill != null) {
 					if (racePlayer.removeSkill(skill)) {
 						if (!sender.getEntityWorld().isRemote)
@@ -251,7 +251,7 @@ public class RfMCommand extends CommandBase {
 		EntityPlayer player = null;
 
 		if (name != null) {
-			player = Player.getPlayerByUsername(sender.getCommandSenderName());
+			player = Player.getPlayer(sender.getCommandSenderName());
 		}
 
 		if (player == null && sender instanceof EntityPlayer) {

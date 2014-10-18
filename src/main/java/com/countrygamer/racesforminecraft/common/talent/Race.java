@@ -1,6 +1,6 @@
 package com.countrygamer.racesforminecraft.common.talent;
 
-import com.countrygamer.cgo.common.lib.NameParser;
+import com.countrygamer.cgo.library.common.lib.NameParser;
 import com.countrygamer.racesforminecraft.api.talent.IRace;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -41,7 +41,7 @@ public class Race extends AbstractTalent implements IRace {
 
 	@Override
 	public boolean canUseItem(EntityPlayer player, ItemStack itemStack) {
-		boolean item_is_in_list = NameParser.isInList(itemStack, this.usableList);
+		boolean item_is_in_list = NameParser.isInCollection(itemStack, this.usableList);
 		return this.isBlacklist ? !item_is_in_list : item_is_in_list;
 	}
 

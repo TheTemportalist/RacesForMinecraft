@@ -1,8 +1,8 @@
 package com.countrygamer.racesforminecraft.common;
 
-import com.countrygamer.cgo.common.lib.LogHelper;
-import com.countrygamer.cgo.common.lib.NameParser;
-import com.countrygamer.cgo.wrapper.common.registries.OptionRegister;
+import com.countrygamer.cgo.library.common.lib.LogHelper;
+import com.countrygamer.cgo.library.common.lib.NameParser;
+import com.countrygamer.cgo.library.common.register.OptionRegister;
 import com.countrygamer.racesforminecraft.api.talent.CasteTrait;
 import com.countrygamer.racesforminecraft.common.init.Castes;
 import com.countrygamer.racesforminecraft.common.init.Races;
@@ -13,7 +13,6 @@ import com.countrygamer.racesforminecraft.common.talent.Skill;
 import com.google.gson.*;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameData;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -342,8 +341,9 @@ public class RfMOptions extends OptionRegister {
 							if (potionEffectsObj.has("curativeItems")) {
 								for (JsonElement curativeItemsElement : potionEffectsObj
 										.getAsJsonArray("curativeItems")) {
-									potionEffect.addCurativeItem(NameParser
-											.getItemStack(curativeItemsElement.getAsString()));
+									potionEffect.addCurativeItem(
+											NameParser.getItemStack(
+													curativeItemsElement.getAsString()));
 								}
 							}
 
@@ -400,11 +400,6 @@ public class RfMOptions extends OptionRegister {
 	public void register() {
 		// TODO Do NORMAL .cfg things here!
 
-	}
-
-	@Override
-	public Class<? extends GuiScreen> getGuiConfigClass() {
-		return super.getGuiConfigClass();
 	}
 
 }

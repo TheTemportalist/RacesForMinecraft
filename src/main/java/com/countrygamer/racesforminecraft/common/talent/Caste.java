@@ -1,6 +1,6 @@
 package com.countrygamer.racesforminecraft.common.talent;
 
-import com.countrygamer.cgo.common.lib.NameParser;
+import com.countrygamer.cgo.library.common.lib.NameParser;
 import com.countrygamer.racesforminecraft.api.talent.CasteTrait;
 import com.countrygamer.racesforminecraft.api.talent.ICaste;
 import net.minecraft.block.Block;
@@ -49,7 +49,7 @@ public class Caste extends AbstractTalent implements ICaste {
 	@Override
 	public void runEffectsForItem(EntityPlayer player, ItemStack itemStack) {
 		int[] xyz = this.getXYZ(player);
-		if (NameParser.isInList(itemStack, this.list)) {
+		if (NameParser.isInCollection(itemStack, this.list)) {
 			for (CasteTrait trait : this.traits) {
 				if (!trait.isBlock) {
 					BiomeGenBase biome = BiomeGenBase.getBiome(trait.biomeID);
@@ -77,7 +77,7 @@ public class Caste extends AbstractTalent implements ICaste {
 
 			ItemStack blockStack = new ItemStack(block, 1,
 					player.worldObj.getBlockMetadata(xyz[0], y1, xyz[2]));
-			if (NameParser.isInList(blockStack, this.list)) {
+			if (NameParser.isInCollection(blockStack, this.list)) {
 				for (CasteTrait trait : this.traits) {
 					if (trait.isBlock && distanceY <= trait.distanceY) {
 						BiomeGenBase biome = BiomeGenBase.getBiome(trait.biomeID);

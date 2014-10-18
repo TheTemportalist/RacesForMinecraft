@@ -1,6 +1,6 @@
 package com.countrygamer.racesforminecraft.common.talent;
 
-import com.countrygamer.cgo.common.lib.NameParser;
+import com.countrygamer.cgo.library.common.lib.NameParser;
 import com.countrygamer.racesforminecraft.api.talent.ISkill;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -37,12 +37,12 @@ public class Skill extends AbstractTalent implements ISkill {
 
 	private boolean hasItem(ItemStack itemStack, boolean checkBlackList) {
 		if (checkBlackList) {
-			if (!this.blackList.isEmpty() && NameParser.isInList(itemStack, this.blackList)) {
+			if (!this.blackList.isEmpty() && NameParser.isInCollection(itemStack, this.blackList)) {
 				return true;
 			}
 		}
 		else {
-			if (!this.whiteList.isEmpty() && NameParser.isInList(itemStack, this.whiteList)) {
+			if (!this.whiteList.isEmpty() && NameParser.isInCollection(itemStack, this.whiteList)) {
 				return true;
 			}
 		}

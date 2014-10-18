@@ -1,6 +1,6 @@
 package com.countrygamer.racesforminecraft.common;
 
-import com.countrygamer.cgo.common.RegisterHelper;
+import com.countrygamer.cgo.library.common.helpers.RegisterHelper;
 import com.countrygamer.cgo.wrapper.common.PluginHelper;
 import com.countrygamer.cgo.wrapper.common.PluginWrapper;
 import com.countrygamer.cgo.wrapper.common.ProxyWrapper;
@@ -17,7 +17,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 @Mod(modid = RfM.pluginID, name = RfM.pluginName, version = "@PLUGIN_VERSION@",
 		guiFactory = "",
 		modLanguage = "java",
-		dependencies = "required-after:Forge@[10.13,);required-after:cgo@[3.0.2,)"
+		dependencies = "required-after:Forge@[10.13,);required-after:cgo@[3.2,)"
 )
 public class RfM extends PluginWrapper {
 

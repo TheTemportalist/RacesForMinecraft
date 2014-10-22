@@ -25,8 +25,8 @@ public class RfM extends PluginWrapper {
 	public static final String pluginName = "Races For Minecraft";
 
 	@SidedProxy(
-			clientSide = "com.countrygamer.racesforminecraft.client.ClientProxy",
-			serverSide = "com.countrygamer.racesforminecraft.common.CommonProxy"
+			clientSide = "com.temportalist.racesforminecraft.client.ClientProxy",
+			serverSide = "com.temportalist.racesforminecraft.common.CommonProxy"
 	)
 	private static ProxyWrapper proxy;
 
